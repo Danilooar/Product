@@ -1,0 +1,40 @@
+# ========================================
+# Python básico
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ambiente virtual
+.env
+.venv/
+env/
+venv/
+
+# Editor de código
+.vscode/
+.idea/
+
+# Django
+db.sqlite3
+db.sqlite3-journal
+*.log
+local_settings.py
+
+# Migrações cacheadas
+*/migrations/__pycache__/
+
+# Arquivos de testes e cobertura
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Ferramentas de lint/cache
+.ruff_cache/
+.mypy_cache/
+.dmypy.json
+
+# Outros
+*.pot
+*.mo
+*.pyc
+.DS_Store
