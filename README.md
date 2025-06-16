@@ -24,6 +24,7 @@ Sistema simples e funcional para **gerenciamento de produtos e estoque**, desenv
 - ✅ Exclusão de produtos  
 
 ---
+###
 
 ## ⚙️ Como Rodar Localmente
 
@@ -47,4 +48,18 @@ python manage.py migrate
 
 python manage.py runserver
 ➡️ Acesse o sistema em: http://127.0.0.1:8000
+```
+###
+
+👨‍💻 Autor
+Desenvolvido por Danilo Araújo
+
+GitHub: @Danilooar
+
+LinkedIn: Danilo Araújo
+
+📃 Licença
+Este projeto está sob a licença MIT.
+Consulte o arquivo LICENSE para mais informações.
+
 
