@@ -1,0 +1,446 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}✏️ Editar {{ object.nome }} | Sistema de Estoque{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-color: #4361ee;
+        --secondary-color: #3f37c9;
+        --success-color: #4cc9f0;
+        --warning-color: #f8961e;
+        --danger-color: #f94144;
+        --light-color: #f8f9fa;
+        --dark-color: #212529;
+        --border-color: #dee2e6;
+        --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+    }
+    
+    .edit-container {
+        max-width: 1000px;
+        margin: 2rem auto;
+        padding: 2.5rem;
+        background: white;
+        box-shadow: var(--shadow);
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+    }
+    
+    .edit-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .edit-title {
+        font-size: 1.8rem;
+        color: var(--dark-color);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+    }
+    
+    .edit-title .emoji {
+        font-size: 1.5rem;
+    }
+    
+    .product-code {
+        background: var(--light-color);
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.9rem;
+    }
+    
+    .edit-form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+    
+    .form-section {
+        margin-bottom: 1.5rem;
+    }
+    
+    .section-title {
+        font-size: 1.1rem;
+        color: var(--dark-color);
+        margin-bottom: 1.2rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--primary-color);
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.2rem;
+        position: relative;
+    }
+    
+    .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.6rem;
+        color: var(--dark-color);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: var(--transition);
+        background-color: var(--light-color);
+    }
+    
+    .form-control:focus {
+        border-color: var(--primary-color);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+    }
+    
+    .form-select {
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 0.8rem center;
+        background-size: 1.2rem;
+    }
+    
+    .form-textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+    
+    .form-image-container {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .form-image-preview {
+        max-width: 220px;
+        max-height: 220px;
+        border: 2px dashed var(--border-color);
+        border-radius: 8px;
+        padding: 0.8rem;
+        background: white;
+        object-fit: contain;
+    }
+    
+    .form-actions {
+        grid-column: span 2;
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+        margin-top: 1.5rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border-color);
+    }
+    
+    .btn {
+        padding: 0.8rem 1.8rem;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        transition: var(--transition);
+        cursor: pointer;
+        border: none;
+        font-size: 0.95rem;
+    }
+    
+    .btn-primary {
+        background: var(--primary-color);
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        background: var(--secondary-color);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow);
+    }
+    
+    .btn-outline {
+        background: transparent;
+        color: var(--dark-color);
+        border: 1px solid var(--border-color);
+    }
+    
+    .btn-outline:hover {
+        background: var(--light-color);
+    }
+    
+    .input-icon {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none;
+        color: #6c757d;
+    }
+    
+    .status-toggle {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .status-toggle input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .stock-indicator {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .stock-low {
+        color: var(--danger-color);
+    }
+    
+    .stock-medium {
+        color: var(--warning-color);
+    }
+    
+    .stock-high {
+        color: var(--success-color);
+    }
+    
+    @media (max-width: 768px) {
+        .edit-container {
+            padding: 1.5rem;
+        }
+        
+        .edit-form {
+            grid-template-columns: 1fr;
+        }
+        
+        .form-actions {
+            grid-column: span 1;
+            flex-direction: column;
+        }
+        
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="edit-container">
+    <div class="edit-header">
+        <h1 class="edit-title">
+            <span class="emoji">✏️</span>
+            Editar Produto
+        </h1>
+        <span class="product-code">#{{ object.id }}</span>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="edit-form">
+        {% csrf_token %}
+        
+        <!-- Coluna 1: Informações Básicas -->
+        <div class="form-column">
+            <div class="form-section">
+                <h3 class="section-title">
+                    <span class="emoji">📝</span>
+                    Informações Básicas
+                </h3>
+                
+                <div class="form-group">
+                    <label for="id_nome" class="form-label">
+                        <span class="emoji">🏷️</span>
+                        Nome do Produto
+                    </label>
+                    <input type="text" name="nome" value="{{ form.nome.value }}" class="form-control" id="id_nome" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_categoria" class="form-label">
+                        <span class="emoji">📦</span>
+                        Categoria
+                    </label>
+                    <select name="categoria" class="form-control form-select" id="id_categoria">
+                        <option value="">---------</option>
+                        {% for categoria in form.categoria.field.queryset %}
+                            <option value="{{ categoria.pk }}" {% if categoria.pk == form.categoria.value %}selected{% endif %}>
+                                {{ categoria.nome }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_descricao" class="form-label">
+                        <span class="emoji">📄</span>
+                        Descrição
+                    </label>
+                    <textarea name="descricao" class="form-control form-textarea" id="id_descricao">{{ form.descricao.value|default:"" }}</textarea>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Coluna 2: Preço, Estoque, Status e Imagem -->
+        <div class="form-column">
+            <div class="form-section">
+                <h3 class="section-title">
+                    <span class="emoji">💰</span>
+                    Preço e Estoque
+                </h3>
+                
+                <div class="form-group">
+                    <label for="id_preco" class="form-label">
+                        <span class="emoji">💲</span>
+                        Preço
+                    </label>
+                    <div style="position: relative;">
+                        <input type="number" name="preco" value="{{ form.preco.value }}" step="0.01" min="0" class="form-control" id="id_preco" required>
+                        <span class="input-icon">R$</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_Estoque" class="form-label">
+                        <span class="emoji">📊</span>
+                        Estoque
+                    </label>
+                    <input type="number" name="Estoque" value="{{ form.Estoque.value|default:'0' }}" step="1" min="0" class="form-control" id="id_Estoque" required>
+                    {% if form.Estoque.value %}
+                        <div class="stock-indicator">
+                            {% if form.Estoque.value <= 5 %}
+                                <span class="stock-low">⚠️ Estoque baixo!</span>
+                            {% elif form.Estoque.value <= 15 %}
+                                <span class="stock-medium">🟡 Estoque moderado</span>
+                            {% else %}
+                                <span class="stock-high">✅ Estoque suficiente</span>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <h3 class="section-title">
+                    <span class="emoji">🔄</span>
+                    Status do Produto
+                </h3>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <span class="emoji">🔄</span>
+                        Status
+                    </label>
+                    <div class="status-toggle">
+                        <input type="checkbox" name="status" id="id_status" {% if form.status.value %}checked{% endif %}>
+                        <label for="id_status">Produto Ativo</label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-section">
+                <h3 class="section-title">
+                    <span class="emoji">🖼️</span>
+                    Imagem do Produto
+                </h3>
+                
+                <div class="form-group form-image-container">
+                    <label for="id_photo" class="form-label">
+                        <span class="emoji">📷</span>
+                        Foto do Produto
+                    </label>
+                    <input type="file" name="photo" class="form-control" id="id_photo" accept="image/*">
+                    
+                    {% if object.photo %}
+                        <img src="{{ object.photo.url }}" alt="Imagem atual" class="form-image-preview">
+                        <div style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" name="photo-clear" id="photo-clear">
+                            <label for="photo-clear" style="font-size: 0.9rem;">
+                                <span class="emoji">❌</span>
+                                Remover imagem atual
+                            </label>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a href="{% url 'ProdutoListView' %}" class="btn btn-outline">
+                <span class="emoji">↩️</span>
+                Cancelar
+            </a>
+            <button type="submit" class="btn btn-primary">
+                <span class="emoji">💾</span>
+                Salvar Alterações
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Máscara para preço
+        const precoInput = document.getElementById('id_preco');
+        if (precoInput) {
+            precoInput.addEventListener('blur', function() {
+                this.value = parseFloat(this.value || 0).toFixed(2);
+            });
+        }
+
+        // Validação para estoque não negativo
+        const estoqueInput = document.getElementById('id_Estoque');
+        if (estoqueInput) {
+            estoqueInput.addEventListener('change', function() {
+                if (this.value < 0) {
+                    this.value = 0;
+                }
+            });
+        }
+
+        // Preview da imagem
+        const imageInput = document.getElementById('id_photo');
+        if (imageInput) {
+            imageInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        let preview = document.querySelector('.form-image-preview');
+                        if (!preview) {
+                            preview = document.createElement('img');
+                            preview.className = 'form-image-preview';
+                            preview.alt = 'Pré-visualização';
+                            imageInput.after(preview);
+                        }
+                        preview.src = event.target.result;
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

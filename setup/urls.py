@@ -1,25 +1,15 @@
-"""
-URL configuration for setup project.
+from django.urls import path  # type: ignore
+from django.contrib import admin  # type: ignore
+from Proj.views import ProdutoListView, ProdutoCreateView, ProdutoDetailView, ProdutoUpdateView, ProdutoDeleteView, CategoriaCreateView, CategoriaListView # type: ignore
 
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
-from django.contrib import admin # type: ignore
-from django.urls import path # type: ignore
-from Proj.views import Produto_V
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
-    path('', Produto_V, name='estoque'),
-
+    path('admin/', admin.site.urls),
+    path('categorias/', CategoriaListView.as_view(), name='CategoriaListView'),
+    path('categorias/noadicionar/', CategoriaCreateView.as_view(), name='CategoriaCreateView'),
+    path('', ProdutoListView.as_view(), name='ProdutoListView'),
+    path('produto/<int:pk>/', ProdutoDetailView.as_view(), name='ProdutoDetailView'),
+    path('produto/create/', ProdutoCreateView.as_view(), name='ProdutoCreateView'),
+    path('produto/edit/<int:pk>/editar', ProdutoUpdateView.as_view(), name='ProdutoUpdateView'),
+    path('produto/delete/<int:pk>/excluir', ProdutoDeleteView.as_view(), name='ProdutoDeleteView'),
 ]

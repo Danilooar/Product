@@ -1,0 +1,331 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<header class="header bg-gradient-dark">
+  <div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center">
+        <div class="brand-logo me-3 d-flex align-items-center justify-content-center bg-primary rounded" style="width: 40px; height: 40px;">
+          <i class="fas fa-boxes text-white"></i>
+        </div>
+        <h1 class="mb-0 text-white">
+          <span class="fw-bold">BRDEV</span> <span class="fw-light">Estoque</span>
+        </h1>
+      </div>
+      <div class="d-flex">
+        <a href="{% url 'ProdutoCreateView' %}" class="btn btn-primary btn-sm me-2">
+          <i class="fas fa-plus me-1"></i> Novo Produto
+        </a>
+        <a href="{% url 'CategoriaCreateView' %}" class="btn btn-outline-light btn-sm">
+          <i class="fas fa-tag me-1"></i> Nova Categoria
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="container py-4">
+  <!-- Sistema de Mensagens Django -->
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-4">
+        <div class="d-flex align-items-center">
+          <i class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'error' %}fa-exclamation-circle{% else %}fa-info-circle{% endif %} me-2"></i>
+          <div>{{ message }}</div>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <div class="row g-4 mb-4">
+    <div class="col-md-4">
+      <div class="card stat-card border-start border-4 border-primary">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <h6 class="text-uppercase text-muted mb-2">Produtos Cadastrados</h6>
+              <h2 class="mb-0">{{ produtos.count }}</h2>
+            </div>
+            <div class="bg-primary bg-opacity-10 p-3 rounded">
+              <i class="fas fa-boxes text-primary"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-4">
+      <div class="card stat-card border-start border-4 border-warning">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <h6 class="text-uppercase text-muted mb-2">Estoque Crítico</h6>
+              <h2 class="mb-0">{{ produtos_baixo_estoque }}</h2>
+            </div>
+            <div class="bg-warning bg-opacity-10 p-3 rounded">
+              <i class="fas fa-exclamation-triangle text-warning"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="col-md-4">
+      <div class="card stat-card border-start border-4 border-info">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <h6 class="text-uppercase text-muted mb-2">Categorias</h6>
+              <h2 class="mb-0">{{ categorias.count }}</h2>
+            </div>
+            <div class="bg-info bg-opacity-10 p-3 rounded">
+              <i class="fas fa-tags text-info"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card shadow-sm border-0 overflow-hidden">
+    <div class="card-header bg-white border-bottom py-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+          <i class="fas fa-clipboard-list text-primary me-2"></i> Controle de Estoque
+        </h5>
+        <div class="d-flex">
+          <a href="{% url 'CategoriaListView' %}" class="btn btn-sm btn-outline-dark me-2">
+            <i class="fas fa-tags me-1"></i> Categorias
+          </a>
+          <div class="input-group input-group-sm" style="width: 200px;">
+            <input type="text" class="form-control" placeholder="Pesquisar..." id="searchInput">
+            <button class="btn btn-dark" type="button" id="searchButton">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0" id="productsTable">
+        <thead class="table-light">
+          <tr>
+            <th class="ps-4">Produto</th>
+            <th>Categoria</th>
+            <th>Preço</th>
+            <th>Estoque</th>
+            <th>Status</th>
+            <th class="text-end pe-4">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for produto in produtos %}
+          <tr>
+            <td class="ps-4">
+              <div class="d-flex align-items-center">
+                {% if produto.photo %}
+                <img src="{{ produto.photo.url }}" alt="{{ produto.nome }}" class="rounded me-3" width="48" height="48" style="object-fit: cover;">
+                {% else %}
+                <div class="rounded bg-light d-flex align-items-center justify-content-center me-3" style="width: 48px; height: 48px;">
+                  <i class="fas fa-box-open text-muted"></i>
+                </div>
+                {% endif %}
+                <div>
+                  <strong>{{ produto.nome }}</strong>
+                  <div class="text-muted small">{{ produto.descricao|truncatechars:40 }}</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="badge bg-light text-dark">
+                {{ produto.categoria.nome|default:"-" }}
+              </span>
+            </td>
+            <td>
+              <span class="fw-bold">R$ {{ produto.preco|floatformat:2 }}</span>
+            </td>
+            <td>
+              <div class="d-flex align-items-center">
+                <div class="progress flex-grow-1 me-2" style="height: 6px;">
+                  <div class="progress-bar {% if produto.quantidade == 0 %}bg-danger{% elif produto.quantidade < 5 %}bg-warning{% else %}bg-success{% endif %}" 
+                       role="progressbar" style="width: {% widthratio produto.quantidade 20 100 %}%"></div>
+                </div>
+                <span>{{ produto.quantidade }}</span>
+              </div>
+            </td>
+            <td>
+              {% if produto.quantidade == 0 %}
+                <span class="badge bg-danger">
+                  <i class="fas fa-times-circle me-1"></i> Esgotado
+                </span>
+              {% elif produto.quantidade < 5 %}
+                <span class="badge bg-warning">
+                  <i class="fas fa-exclamation-triangle me-1"></i> Crítico
+                </span>
+              {% else %}
+                <span class="d-none"></span> <!-- Oculta quando estoque está normal -->
+              {% endif %}
+            </td>
+            <td class="text-end pe-4">
+              <div class="btn-group btn-group-sm" role="group">
+                <a href="{% url 'ProdutoDetailView' produto.pk %}" class="btn btn-sm btn-outline-dark" title="Visualizar" data-bs-toggle="tooltip">
+                  <i class="fas fa-eye"></i>
+                </a>
+                <a href="{% url 'ProdutoUpdateView' produto.pk %}" class="btn btn-sm btn-outline-secondary" title="Editar" data-bs-toggle="tooltip">
+                  <i class="fas fa-edit"></i>
+                </a>
+                <a href="{% url 'ProdutoDeleteView' produto.pk %}" class="btn btn-sm btn-outline-danger" title="Excluir" data-bs-toggle="tooltip">
+                  <i class="fas fa-trash"></i>
+                </a>
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="text-center py-5">
+              <div class="py-5">
+                <i class="fas fa-box-open fa-4x text-muted mb-4"></i>
+                <h3 class="mb-3">Nenhum produto cadastrado</h3>
+                <p class="text-muted mb-4">Comece adicionando produtos ao seu estoque</p>
+                <a href="{% url 'ProdutoCreateView' %}" class="btn btn-dark me-2">
+                  <i class="fas fa-plus me-1"></i> Adicionar Produto
+                </a>
+                <a href="{% url 'CategoriaCreateView' %}" class="btn btn-outline-dark">
+                  <i class="fas fa-tag me-1"></i> Adicionar Categoria
+                </a>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    
+    {% if produtos %}
+    <div class="card-footer bg-white border-top py-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="text-muted small">
+          Mostrando <strong>{{ produtos.count }}</strong> itens
+        </div>
+        <nav aria-label="Page navigation">
+          <ul class="pagination pagination-sm mb-0">
+            <li class="page-item disabled">
+              <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Anterior</a>
+            </li>
+            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item">
+              <a class="page-link" href="#">Próxima</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</main>
+
+<style>
+  .header {
+    background: linear-gradient(135deg, #2c3e50 0%, #1a1a2e 100%);
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  }
+  
+  .brand-logo {
+    background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+  }
+  
+  .stat-card {
+    transition: all 0.3s ease;
+    height: 100%;
+    border-radius: 8px;
+  }
+  
+  .stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+  }
+  
+  .table th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+    color:rgb(255, 255, 255);
+  }
+  
+  .badge {
+    font-weight: 500;
+    padding: 0.35em 0.65em;
+    font-size: 0.75em;
+    letter-spacing: 0.5px;
+  }
+  
+  .progress {
+    background-color: #f0f2f5;
+    border-radius: 3px;
+  }
+  
+  .btn-dark {
+    background-color: #2c3e50;
+    border-color: #2c3e50;
+  }
+  
+  .btn-dark:hover {
+    background-color: #1a1a2e;
+    border-color: #1a1a2e;
+  }
+  
+  .btn-outline-dark {
+    border-color: #2c3e50;
+    color: #2c3e50;
+  }
+  
+  .btn-outline-dark:hover {
+    background-color: #2c3e50;
+    color: white;
+  }
+  
+  .status-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 6px;
+  }
+</style>
+
+<script>
+  // Ativar tooltips
+  document.addEventListener('DOMContentLoaded', function() {
+    // Tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+    
+    // Filtro de pesquisa simples
+    document.getElementById('searchButton').addEventListener('click', function() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const rows = document.querySelectorAll('#productsTable tbody tr');
+      
+      rows.forEach(row => {
+        const productName = row.querySelector('td:first-child strong').textContent.toLowerCase();
+        row.style.display = productName.includes(searchTerm) ? '' : 'none';
+      });
+    });
+    
+    // Pesquisa ao pressionar Enter
+    document.getElementById('searchInput').addEventListener('keyup', function(e) {
+      if (e.key === 'Enter') {
+        document.getElementById('searchButton').click();
+      }
+    });
+  });
+</script>
+{% endblock %}

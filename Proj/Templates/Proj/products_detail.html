@@ -1,0 +1,585 @@
+{% extends "base.html" %}
+{% load static %}
+{% load l10n %}
+
+{% block title %}{{ produto.nome }} | Gestão de Estoque Inteligente{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary: #3b82f6;
+        --primary-dark: #2563eb;
+        --primary-light: #dbeafe;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --light: #f8fafc;
+        --dark: #1e293b;
+        --gray: #64748b;
+        --border: #e2e8f0;
+        --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.03);
+        --shadow-md: 0 4px 6px rgba(15, 23, 42, 0.05);
+        --shadow-lg: 0 10px 15px rgba(15, 23, 42, 0.1);
+        --radius-sm: 0.25rem;
+        --radius-md: 0.5rem;
+        --radius-lg: 0.75rem;
+        --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .product-container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 2.5rem;
+        background: white;
+        box-shadow: var(--shadow-lg);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border);
+    }
+
+    .product-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 2rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .product-title {
+        font-size: 1.875rem;
+        color: var(--dark);
+        margin: 0;
+        font-weight: 700;
+        line-height: 1.25;
+        letter-spacing: -0.025em;
+    }
+
+    .product-subtitle {
+        color: var(--gray);
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        font-weight: 500;
+    }
+
+    .product-code {
+        background: var(--primary-light);
+        padding: 0.5rem 1rem;
+        border-radius: var(--radius-md);
+        font-family: 'Roboto Mono', monospace;
+        font-size: 0.8125rem;
+        color: var(--primary-dark);
+        font-weight: 600;
+    }
+
+    .product-content {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 2.5rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .product-image-container {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        border-radius: var(--radius-md);
+        border: 1px dashed #cbd5e1;
+        padding: 1.5rem;
+        height: 360px;
+        overflow: hidden;
+    }
+
+    .product-image {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        border-radius: var(--radius-sm);
+        transition: var(--transition);
+        filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.05));
+    }
+
+    .product-details {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .detail-section {
+        background: white;
+        border-radius: var(--radius-md);
+        padding: 1.75rem;
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border);
+    }
+
+    .section-title {
+        font-size: 1.125rem;
+        color: var(--dark);
+        margin-bottom: 1.25rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid var(--border);
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        letter-spacing: -0.01em;
+    }
+
+    .section-title i {
+        font-size: 1em;
+        color: var(--primary);
+    }
+
+    .detail-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 1.25rem;
+    }
+
+    .detail-item {
+        margin-bottom: 1rem;
+    }
+
+    .detail-label {
+        font-weight: 500;
+        color: var(--gray);
+        font-size: 0.8125rem;
+        display: block;
+        margin-bottom: 0.375rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .detail-value {
+        padding: 0.75rem 1rem;
+        background: var(--light);
+        border-radius: var(--radius-sm);
+        border-left: 3px solid var(--primary);
+        font-size: 0.9375rem;
+        color: var(--dark);
+        min-height: 2.75rem;
+        display: flex;
+        align-items: center;
+        font-weight: 500;
+    }
+
+    .price-value {
+        color: var(--primary-dark);
+        font-weight: 700;
+        font-size: 1.125rem;
+    }
+
+    .profit-value {
+        color: var(--success);
+        font-weight: 700;
+        font-size: 1.125rem;
+    }
+
+    .quantity-value {
+        font-family: 'Roboto Mono', monospace;
+        font-weight: 700;
+    }
+
+    /* Seção de Estoque Aprimorada */
+    .stock-section {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: var(--radius-md);
+        padding: 1.75rem;
+        margin-top: 0;
+    }
+
+    .stock-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .stock-title {
+        font-size: 1.25rem;
+        color: var(--dark);
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .stock-indicator {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .stock-quantity {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--dark);
+        font-family: 'Roboto Mono', monospace;
+    }
+
+    .stock-status {
+        padding: 0.5rem 1.25rem;
+        border-radius: var(--radius-md);
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .in-stock {
+        background: #dcfce7;
+        color: #166534;
+        border: 1px solid #bbf7d0;
+    }
+
+    .low-stock {
+        background: #fef3c7;
+        color: #92400e;
+        border: 1px solid #fde68a;
+    }
+
+    .out-of-stock {
+        background: #fee2e2;
+        color: #991b1b;
+        border: 1px solid #fca5a5;
+    }
+
+    .stock-details {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .stock-metric {
+        background: white;
+        border-radius: var(--radius-sm);
+        padding: 1rem;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .stock-metric-label {
+        font-size: 0.8125rem;
+        color: var(--gray);
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+    }
+
+    .stock-metric-value {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--dark);
+    }
+
+    .stock-progress {
+        margin-top: 1.5rem;
+    }
+
+    .progress-label {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.5rem;
+        font-size: 0.875rem;
+        color: var(--gray);
+    }
+
+    .progress-bar {
+        height: 10px;
+        background: #e2e8f0;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: var(--primary);
+        border-radius: 5px;
+        transition: width 0.5s ease;
+    }
+
+    .stock-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: var(--radius-sm);
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: var(--transition);
+        cursor: pointer;
+        border: none;
+        font-size: 0.875rem;
+        letter-spacing: 0.025em;
+    }
+
+    .btn i {
+        font-size: 0.9375rem;
+    }
+
+    .btn-primary {
+        background: var(--primary);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: var(--primary-dark);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .btn-outline {
+        background: transparent;
+        color: var(--primary);
+        border: 1px solid var(--primary);
+    }
+
+    .btn-outline:hover {
+        background: rgba(59, 130, 246, 0.05);
+    }
+
+    .btn-danger {
+        background: var(--danger);
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background: #dc2626;
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+    }
+
+    .product-description {
+        margin-top: 2rem;
+        padding: 1.75rem;
+        background: white;
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-sm);
+        border: 1px solid var(--border);
+    }
+
+    .description-content {
+        line-height: 1.7;
+        color: var(--dark);
+        font-size: 0.9375rem;
+    }
+
+    /* Novos estilos para alertas de estoque */
+    .stock-alert {
+        padding: 1rem;
+        border-radius: var(--radius-sm);
+        margin-top: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+
+    .alert-icon {
+        font-size: 1.25rem;
+    }
+
+    .alert-low {
+        background: #fffbeb;
+        border: 1px solid #fef3c7;
+        color: #92400e;
+    }
+
+    .alert-critical {
+        background: #fef2f2;
+        border: 1px solid #fee2e2;
+        color: #991b1b;
+    }
+
+    @media (max-width: 992px) {
+        .product-content {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+        
+        .product-image-container {
+            height: 300px;
+            max-width: 100%;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .product-container {
+            padding: 1.5rem;
+        }
+        
+        .product-header {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .detail-grid, .stock-details {
+            grid-template-columns: 1fr;
+        }
+        
+        .stock-indicator {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        
+        .stock-actions {
+            flex-direction: column;
+        }
+        
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="product-container">
+    <div class="product-header">
+        <div>
+            <h1 class="product-title">{{ produto.nome }}</h1>
+            <p class="product-subtitle">
+                {% if produto.categoria %}
+                    {{ produto.categoria.nome }}
+                {% else %}
+                    Sem categoria
+                {% endif %}
+            </p>
+        </div>
+        <span class="product-code">#{{ produto.id|stringformat:"06d" }}</span>
+    </div>
+
+    <div class="product-content">
+        <div class="product-image-container">
+            {% if produto.photo %}
+                <img src="{{ produto.photo.url }}" 
+                     alt="{{ produto.nome }}" 
+                     class="product-image">
+            {% else %}
+                <img src="{% static 'img/default-product.png' %}" 
+                     alt="Produto sem imagem" 
+                     class="product-image">
+            {% endif %}
+        </div>
+
+        <div class="product-details">
+            <div class="detail-section">
+                <h3 class="section-title"><i class="fas fa-info-circle"></i> Informações Básicas</h3>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Categoria</span>
+                        <div class="detail-value">
+                            {% if produto.categoria %}
+                                {{ produto.categoria.nome }}
+                            {% else %}
+                                -
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Status</span>
+                        <div class="detail-value">
+                            {% if produto.status %}
+                                <span style="color: var(--success);">Ativo</span>
+                            {% else %}
+                                <span style="color: var(--danger);">Inativo</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="detail-section">
+                <h3 class="section-title"><i class="fas fa-tag"></i> Informações Financeiras</h3>
+                <div class="detail-grid">
+                    <div class="detail-item">
+                        <span class="detail-label">Preço Unitário</span>
+                        <div class="detail-value price-value">
+                            R$ {{ produto.preco|floatformat:2 }}
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Margem de Lucro</span>
+                        <div class="detail-value profit-value">
+                            {% if produto.custo and produto.preco %}
+                                {% widthratio produto.preco|floatformat:2 produto.custo|floatformat:2 100 %}%
+                            {% else %}
+                                -
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seção de Estoque Aprimorada -->
+            <div class="stock-section">
+                <div class="stock-header">
+                    <h3 class="stock-title">Controle de Estoque</h3>
+                    <div class="stock-indicator">
+                        <div class="stock-quantity">{{ produto.Estoque|floatformat:"0"|localize }}</div>
+                        {% if produto.Estoque > 10 %}
+                            <span class="stock-status in-stock">Disponível</span>
+                        {% elif produto.Estoque > 0 %}
+                            <span class="stock-status low-stock">Estoque Baixo</span>
+                        {% else %}
+                            <span class="stock-status out-of-stock">Esgotado</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="stock-details">
+                    <div class="stock-metric">
+                        <div class="stock-metric-label">Última Atualização</div>
+                        <div class="stock-metric-value">
+                            {{ produto.data_atualizacao|date:"d/m/Y H:i"|default:"-" }}
+                        </div>
+                    </div>
+                </div>
+
+                {% if produto.Estoque <= 5 and produto.Estoque > 0 %}
+                <div class="stock-alert alert-low">
+                    <i class="fas fa-exclamation-triangle alert-icon"></i>
+                    <span>Alerta: Estoque atingiu nível crítico. Considere fazer um novo pedido.</span>
+                </div>
+                {% elif produto.Estoque == 0 %}
+                <div class="stock-alert alert-critical">
+                    <i class="fas fa-exclamation-circle alert-icon"></i>
+                    <span>Produto esgotado. Urgente: necessário reposição imediata.</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="stock-actions">
+                <a href="{% url 'ProdutoUpdateView' produto.pk %}" class="btn btn-primary">
+                    <i class="fas fa-edit"></i> Editar Produto
+                </a>
+                <a href="{% url 'ProdutoDeleteView' produto.pk %}" class="btn btn-danger">
+                    <i class="fas fa-trash-alt"></i> Excluir
+                </a>
+                <a href="{% url 'ProdutoListView' %}" class="btn btn-outline">
+                    <i class="fas fa-arrow-left"></i> Voltar para Lista
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {% if produto.descricao %}
+    <div class="product-description">
+        <h3 class="section-title"><i class="fas fa-align-left"></i> Descrição do Produto</h3>
+        <div class="description-content">
+            {{ produto.descricao|linebreaks }}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
