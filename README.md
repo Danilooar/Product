@@ -49,17 +49,20 @@ python manage.py migrate
 python manage.py runserver
 ➡️ Acesse o sistema em: http://127.0.0.1:8000
 ```
-###
 
-👨‍💻 Autor
+
+### 👨‍💻 Autor
+
 Desenvolvido por Danilo Araújo
 
-GitHub: @Danilooar
+GitHub: [@Danilooar](https://github.com/Danilooar)  
+LinkedIn: [Danilo Araújo](https://www.linkedin.com/in/danilo-araujo/)
+  
+---
 
-LinkedIn: Danilo Araújo
+### 📃 Licença
 
-📃 Licença
-Este projeto está sob a licença MIT.
-Consulte o arquivo LICENSE para mais informações.
+Este projeto está sob licença MIT. Consulte o arquivo LICENSE para mais informações.
+
 
 
