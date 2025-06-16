@@ -1,0 +1,434 @@
+{% extends 'base.html' %}
+
+{% block title %}Registro | Car System{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary: #4361ee;
+        --secondary: #3a0ca3;
+        --accent: #4895ef;
+        --light: #f8f9fa;
+        --dark: #212529;
+        --success: #4cc9f0;
+        --danger: #f72585;
+        --glass: rgba(255, 255, 255, 0.15);
+        --glass-border: rgba(255, 255, 255, 0.2);
+    }
+    
+    .register-container {
+        display: flex;
+        min-height: calc(100vh - 80px);
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .register-container::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -50%;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+        opacity: 0.1;
+        z-index: 0;
+    }
+    
+    .register-container::after {
+        content: '';
+        position: absolute;
+        bottom: -50%;
+        left: -50%;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+        opacity: 0.1;
+        z-index: 0;
+    }
+    
+    .register-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 24px;
+        box-shadow: 0 15px 50px rgba(0, 0, 0, 0.1),
+                    0 0 0 1px rgba(255, 255, 255, 0.3) inset;
+        overflow: hidden;
+        width: 100%;
+        max-width: 450px;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.1);
+        position: relative;
+        z-index: 1;
+        border: 1px solid var(--glass-border);
+    }
+    
+    .register-card:hover {
+        transform: translateY(-8px) scale(1.01);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15),
+                    0 0 0 1px rgba(255, 255, 255, 0.4) inset;
+    }
+    
+    .register-header {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 2.5rem 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .register-header::before {
+        content: '';
+        position: absolute;
+        top: -50px;
+        right: -50px;
+        width: 150px;
+        height: 150px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+    }
+    
+    .register-header::after {
+        content: '';
+        position: absolute;
+        bottom: -80px;
+        left: -30px;
+        width: 200px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+    }
+    
+    .register-header h1 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        font-weight: 700;
+        position: relative;
+        z-index: 1;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .register-header p {
+        opacity: 0.9;
+        font-weight: 300;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .register-body {
+        padding: 2rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+        color: var(--dark);
+        font-size: 0.95rem;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 0.9rem 1.2rem;
+        border: 2px solid #e9ecef;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background-color: rgba(255, 255, 255, 0.8);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
+    }
+    
+    .form-control:focus {
+        border-color: var(--accent);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(72, 149, 239, 0.15),
+                    0 5px 15px rgba(0, 0, 0, 0.05);
+        background-color: white;
+    }
+    
+    .password-container {
+        position: relative;
+    }
+    
+    .toggle-password {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #adb5bd;
+        transition: color 0.2s;
+    }
+    
+    .toggle-password:hover {
+        color: var(--primary);
+    }
+    
+    .register-footer {
+        text-align: center;
+        padding: 0 2rem 2rem;
+        font-size: 0.95rem;
+    }
+    
+    .register-footer a {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.2s;
+        position: relative;
+    }
+    
+    .register-footer a::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: var(--primary);
+        transition: width 0.3s;
+    }
+    
+    .register-footer a:hover {
+        color: var(--secondary);
+    }
+    
+    .register-footer a:hover::after {
+        width: 100%;
+    }
+    
+    .btn-register {
+        width: 100%;
+        padding: 1.1rem;
+        font-size: 1rem;
+        font-weight: 600;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        position: relative;
+        overflow: hidden;
+        margin-top: 0.5rem;
+    }
+    
+    .btn-register::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: 0.5s;
+    }
+    
+    .btn-register:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 7px 20px rgba(67, 97, 238, 0.4);
+    }
+    
+    .btn-register:hover::before {
+        left: 100%;
+    }
+    
+    .btn-register:active {
+        transform: translateY(0);
+    }
+    
+    /* Error message styling */
+    .error-message {
+        background-color: rgba(247, 37, 133, 0.1);
+        border-left: 4px solid var(--danger);
+        color: var(--danger);
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        border-radius: 8px;
+        animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+        transform: translate3d(0, 0, 0);
+    }
+    
+    .error-message p {
+        margin: 0;
+        font-weight: 500;
+    }
+    
+    /* Success message styling */
+    .success-message {
+        background-color: rgba(76, 201, 240, 0.1);
+        border-left: 4px solid var(--success);
+        color: var(--success);
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        border-radius: 8px;
+    }
+    
+    .success-message p {
+        margin: 0;
+        font-weight: 500;
+    }
+    
+    /* Animations */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(30px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    @keyframes shake {
+        10%, 90% { transform: translate3d(-1px, 0, 0); }
+        20%, 80% { transform: translate3d(2px, 0, 0); }
+        30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+        40%, 60% { transform: translate3d(4px, 0, 0); }
+    }
+    
+    .register-card {
+        animation: fadeIn 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    
+    .register-header h1 {
+        animation: float 4s ease-in-out infinite;
+    }
+    
+    /* Responsive */
+    @media (max-width: 480px) {
+        .register-container {
+            padding: 1rem;
+        }
+        
+        .register-card {
+            border-radius: 16px;
+        }
+        
+        .register-header {
+            padding: 1.5rem 1rem;
+        }
+        
+        .register-body {
+            padding: 1.5rem 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="register-container">
+    <div class="register-card">
+        <div class="register-header">
+            <h1>Crie sua conta</h1>
+            <p>Junte-se a nós hoje mesmo</p>
+        </div>
+        
+        <form method="post" class="register-body">
+            {% csrf_token %}
+            
+            <!-- Mensagens de erro/sucesso -->
+            {% if form.errors %}
+                <div class="error-message">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            {% if messages %}
+                {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                        <div class="error-message">
+                            <p>{{ message }}</p>
+                        </div>
+                    {% elif message.tags == 'success' %}
+                        <div class="success-message">
+                            <p>{{ message }}</p>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+            
+            <!-- Campos do formulário -->
+            <div class="form-group">
+                <label for="id_username">Nome de usuário</label>
+                <input type="text" id="id_username" name="username" class="form-control" 
+                       placeholder="Escolha um nome de usuário" required
+                       value="{{ form.username.value|default_if_none:'' }}">
+            </div>
+            
+            <div class="form-group">
+                <label for="id_email">Email</label>
+                <input type="email" id="id_email" name="email" class="form-control" 
+                       placeholder="Seu melhor email" required
+                       value="{{ form.email.value|default_if_none:'' }}">
+            </div>
+            
+            <div class="form-group">
+                <label for="id_password1">Senha</label>
+                <div class="password-container">
+                    <input type="password" id="id_password1" name="password1" class="form-control" 
+                           placeholder="Crie uma senha segura" required>
+                    <span class="toggle-password" onclick="togglePasswordVisibility('id_password1')">👁️</span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="id_password2">Confirme a senha</label>
+                <div class="password-container">
+                    <input type="password" id="id_password2" name="password2" class="form-control" 
+                           placeholder="Repita a senha" required>
+                    <span class="toggle-password" onclick="togglePasswordVisibility('id_password2')">👁️</span>
+                </div>
+            </div>
+            
+            <button type="submit" class="btn-register">Registrar</button>
+        </form>
+        
+        <div class="register-footer">
+            <p>Já tem uma conta? <a href="{% url 'login' %}">Faça login</a></p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function togglePasswordVisibility(fieldId) {
+        const passwordInput = document.getElementById(fieldId);
+        const toggleIcon = passwordInput.nextElementSibling;
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleIcon.textContent = '👁️';
+        } else {
+            passwordInput.type = 'password';
+            toggleIcon.textContent = '👁️';
+        }
+    }
+    
+    // Foca no primeiro campo com erro
+    document.addEventListener('DOMContentLoaded', function() {
+        {% if form.errors %}
+            const firstErrorField = document.querySelector('.error-message');
+            if (firstErrorField) {
+                const firstErrorInput = document.querySelector('[name="{{ form.errors.keys.0 }}"]');
+                if (firstErrorInput) {
+                    firstErrorInput.focus();
+                }
+            }
+        {% endif %}
+    });
+</script>
+{% endblock %}

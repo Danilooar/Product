@@ -12,7 +12,7 @@ class Produto(models.Model):
     preco = models.DecimalField(max_digits=10, decimal_places=2)
     Estoque = models.FloatField()
     status = models.BooleanField(default=True)
-    photo = models.ImageField(upload_to='product/',blank=True, null=True)
+    photo = models.ImageField(upload_to='products/',blank=True, null=True)
     descricao = models.TextField(null=True, blank=True)
     
     
