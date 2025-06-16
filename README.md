@@ -24,13 +24,6 @@ Este é um sistema simples de gerenciamento de produtos/estoque desenvolvido com
 
 ---
 
-## 🛠️ Como Rodar o Projeto
-
-### 1. Clone o repositório:
-```bash
-git clone https://github.com/Danilooar/Product.git
-cd Product
-
 ---
 
 ## 📌 Próximas Melhorias
@@ -52,4 +45,5 @@ Desenvolvido por **Danilo Araújo**
 ## 📃 Licença
 
 Este projeto está sob a licença **MIT**. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
 
