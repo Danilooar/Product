@@ -1,49 +1,50 @@
 
+
+
 # 📦 BRDEV Estoque - Sistema de Controle de Estoque
 
-Este é um sistema simples de gerenciamento de produtos/estoque desenvolvido com **Python e Django**. Ele permite que o usuário **cadastre, visualize, edite e exclua** produtos de forma prática por meio de uma interface web.
+Sistema simples e funcional para **gerenciamento de produtos e estoque**, desenvolvido com **Python** e **Django**. Com uma interface web intuitiva, permite **cadastrar, visualizar, editar e excluir produtos** de forma prática.
 
 ---
 
 ## 🚀 Tecnologias Utilizadas
 
-- Python 3.x  
-- Django 5.x  
-- HTML + CSS (Django Templates)  
-- SQLite (banco de dados padrão do Django)
+- 🐍 Python 3.x  
+- 🌐 Django 5.x  
+- 🎨 HTML + CSS (Django Templates)  
+- 🗃️ SQLite (banco de dados padrão do Django)
 
 ---
 
 ## 🔧 Funcionalidades
 
 - ✅ Cadastro de produtos  
-- ✅ Visualização da lista de produtos  
-- ✅ Detalhamento individual dos produtos  
-- ✅ Edição de dados dos produtos  
+- ✅ Listagem de produtos com detalhes individuais  
+- ✅ Edição de informações dos produtos  
 - ✅ Exclusão de produtos  
 
 ---
 
----
+## ⚙️ Como Rodar Localmente
 
-## 📌 Próximas Melhorias
+### 1. Clone o repositório
 
-- [ ] Autenticação de usuários (login e permissões)
-- [ ] Filtros e busca por nome ou categoria
-- [ ] Paginação da lista de produtos
-- [ ] Integração com APIs externas
+```bash
+git clone https://github.com/Danilooar/Product.git
+cd Product
+2. Crie e ative o ambiente virtual
 
----
+# Ativação no Windows:
+venv\Scripts\activate
 
-## 👨‍💻 Autor
+3. Instale as dependências
 
-Desenvolvido por **Danilo Araújo**  
-[GitHub](https://github.com/Danilooar) • [LinkedIn](https://www.linkedin.com/)
+pip install -r requirements.txt
+4. Execute as migrações
 
----
+python manage.py migrate
+5. Inicie o servidor
 
-## 📃 Licença
-
-Este projeto está sob a licença **MIT**. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
-
+python manage.py runserver
+➡️ Acesse o sistema em: http://127.0.0.1:8000
 
