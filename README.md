@@ -1,4 +1,5 @@
-# 📦 Product - Sistema de Controle de Estoque
+
+# 📦 BRDEV Estoque - Sistema de Controle de Estoque
 
 Este é um sistema simples de gerenciamento de produtos/estoque desenvolvido com **Python e Django**. Ele permite que o usuário **cadastre, visualize, edite e exclua** produtos de forma prática por meio de uma interface web.
 
@@ -30,19 +31,25 @@ Este é um sistema simples de gerenciamento de produtos/estoque desenvolvido com
 git clone https://github.com/Danilooar/Product.git
 cd Product
 
+---
 
-📌 Próximas Melhorias
- Autenticação de usuários (login e permissões)
+## 📌 Próximas Melhorias
 
- Filtros e busca por nome ou categoria
+- [ ] Autenticação de usuários (login e permissões)
+- [ ] Filtros e busca por nome ou categoria
+- [ ] Paginação da lista de produtos
+- [ ] Integração com APIs externas
 
- Paginação da lista de produtos
+---
 
- Integração com APIs externas
+## 👨‍💻 Autor
 
-👨‍💻 Autor
-Desenvolvido por Danilo Araújo
-GitHub • LinkedIn
+Desenvolvido por **Danilo Araújo**  
+[GitHub](https://github.com/Danilooar) • [LinkedIn](https://www.linkedin.com/)
 
-📃 Licença
-Este projeto está sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
+---
+
+## 📃 Licença
+
+Este projeto está sob a licença **MIT**. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
